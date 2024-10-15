@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('health.urls')),  # Including health app APIs
+    path('api/', include('health.urls')),      # Assuming you have a health app
+    path('auth/', include('auth_app.urls')),   # Include the auth app's URLs
 ]
 
