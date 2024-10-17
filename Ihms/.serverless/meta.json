@@ -1,0 +1,388 @@
+{
+  "C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.6",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>",
+      "env": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "service": "ihms",
+            "provider": {
+              "name": "aws",
+              "runtime": "python3.12",
+              "region": "ap-south-1",
+              "environment": {
+                "AWS_ACCESS_KEY_ID": "<REDACTED>",
+                "AWS_SECRET_ACCESS_KEY": "<REDACTED>",
+                "COGNITO_CLIENT_ID": "1blhg2a1m7fdgp2qc36shlqi8p",
+                "COGNITO_USER_POOL_ID": "ap-south-1_P7QP7MTuc"
+              },
+              "stage": "dev",
+              "versionFunctions": true,
+              "compiledCloudFormationTemplate": {
+                "AWSTemplateFormatVersion": "2010-09-09",
+                "Description": "The AWS CloudFormation template for this Serverless application",
+                "Resources": {
+                  "WsgiLogGroup": {
+                    "Type": "AWS::Logs::LogGroup",
+                    "Properties": {
+                      "LogGroupName": "/aws/lambda/ihms-dev-wsgi"
+                    }
+                  },
+                  "IamRoleLambdaExecution": {
+                    "Type": "AWS::IAM::Role",
+                    "Properties": {
+                      "AssumeRolePolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                          {
+                            "Effect": "Allow",
+                            "Principal": {
+                              "Service": [
+                                "lambda.amazonaws.com"
+                              ]
+                            },
+                            "Action": [
+                              "sts:AssumeRole"
+                            ]
+                          }
+                        ]
+                      },
+                      "Policies": [
+                        {
+                          "PolicyName": {
+                            "Fn::Join": [
+                              "-",
+                              [
+                                "ihms",
+                                "dev",
+                                "lambda"
+                              ]
+                            ]
+                          },
+                          "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:CreateLogStream",
+                                  "logs:CreateLogGroup",
+                                  "logs:TagResource"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ihms-dev*:*"
+                                  }
+                                ]
+                              },
+                              {
+                                "Effect": "Allow",
+                                "Action": [
+                                  "logs:PutLogEvents"
+                                ],
+                                "Resource": [
+                                  {
+                                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ihms-dev*:*:*"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "Path": "/",
+                      "RoleName": {
+                        "Fn::Join": [
+                          "-",
+                          [
+                            "ihms",
+                            "dev",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            "lambdaRole"
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                },
+                "Outputs": {
+                  "ServerlessDeploymentBucketName": {
+                    "Value": "serverless-framework-deployments-ap-south-1-df39b903-4c5e"
+                  }
+                }
+              }
+            },
+            "functions": {
+              "wsgi": {
+                "handler": "wsgi_handler.handler",
+                "events": [
+                  {
+                    "http": {
+                      "path": "/",
+                      "method": "any"
+                    }
+                  },
+                  {
+                    "http": {
+                      "path": "/{proxy+}",
+                      "method": "any"
+                    }
+                  }
+                ],
+                "name": "ihms-dev-wsgi"
+              }
+            },
+            "package": {
+              "exclude": [
+                ".env",
+                "__pycache__/**",
+                ".git/**"
+              ],
+              "artifactsS3KeyDirname": "serverless/ihms/dev/code-artifacts",
+              "deploymentBucket": "serverless-framework-deployments-ap-south-1-df39b903-4c5e",
+              "patterns": [
+                "wsgi_handler.py",
+                "serverless_wsgi.py",
+                ".serverless-wsgi",
+                "unzip_requirements.py"
+              ]
+            },
+            "plugins": [
+              "serverless-wsgi",
+              "serverless-python-requirements"
+            ],
+            "custom": {
+              "pythonRequirements": {
+                "dockerizePip": "non-linux",
+                "zip": true
+              }
+            }
+          },
+          "configFileDirPath": "C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms",
+          "config": {
+            "type": "env"
+          },
+          "options": {},
+          "stage": "dev",
+          "dashboard": null,
+          "logger": {
+            "namespace": "s:core:resolver:env",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      }
+    },
+    "composeServiceName": null,
+    "servicePath": "C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "ihms",
+      "provider": {
+        "name": "aws",
+        "runtime": "python3.12",
+        "region": "ap-south-1",
+        "environment": {
+          "AWS_ACCESS_KEY_ID": "<REDACTED>",
+          "AWS_SECRET_ACCESS_KEY": "<REDACTED>",
+          "COGNITO_CLIENT_ID": "1blhg2a1m7fdgp2qc36shlqi8p",
+          "COGNITO_USER_POOL_ID": "ap-south-1_P7QP7MTuc"
+        },
+        "stage": "dev",
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "WsgiLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/ihms-dev-wsgi"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "ihms",
+                          "dev",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ihms-dev*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ihms-dev*:*:*"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "ihms",
+                      "dev",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-ap-south-1-df39b903-4c5e"
+            }
+          }
+        }
+      },
+      "functions": {
+        "wsgi": {
+          "handler": "wsgi_handler.handler",
+          "events": [
+            {
+              "http": {
+                "path": "/",
+                "method": "any"
+              }
+            },
+            {
+              "http": {
+                "path": "/{proxy+}",
+                "method": "any"
+              }
+            }
+          ],
+          "name": "ihms-dev-wsgi"
+        }
+      },
+      "package": {
+        "exclude": [
+          ".env",
+          "__pycache__/**",
+          ".git/**"
+        ],
+        "artifactsS3KeyDirname": "serverless/ihms/dev/code-artifacts",
+        "deploymentBucket": "serverless-framework-deployments-ap-south-1-df39b903-4c5e",
+        "patterns": [
+          "wsgi_handler.py",
+          "serverless_wsgi.py",
+          ".serverless-wsgi",
+          "unzip_requirements.py"
+        ]
+      },
+      "plugins": [
+        "serverless-wsgi",
+        "serverless-python-requirements"
+      ],
+      "custom": {
+        "pythonRequirements": {
+          "dockerizePip": "non-linux",
+          "zip": true
+        }
+      }
+    },
+    "serviceRawFile": "service: ihms  # Name of your service\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: python3.12  # Specify the Python runtime\r\n  region: ap-south-1  # Change to your desired region\r\n  environment:\r\n    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}  # Reference your .env file\r\n    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}\r\n    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}\r\n    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}\r\n\r\nfunctions:\r\n  wsgi:\r\n    handler: \"wsgi_handler.handler\"  # The handler in your WSGI file\r\n    events:\r\n      - http:\r\n          path: /\r\n          method: any  # Handle any HTTP method\r\n      - http:\r\n          path: /{proxy+}  # For all other routes\r\n          method: any\r\n\r\npackage:\r\n  exclude:\r\n    - .env  # Exclude the .env file from deployment\r\n    - __pycache__/**\r\n    - .git/**\r\n\r\nplugins:\r\n  - serverless-wsgi  # Use serverless-wsgi plugin for WSGI support\r\n  - serverless-python-requirements  # For handling Python dependencies\r\n\r\ncustom:\r\n  pythonRequirements:\r\n    dockerizePip: non-linux  # Use Docker to install packages if you're on non-Linux\r\n    zip: true  # Create a zip file for dependencies\r\n\r\n# Add any additional configurations as necessary\r\n",
+    "command": [
+      "package"
+    ],
+    "options": {},
+    "error": {
+      "message": "spawn docker ENOENT",
+      "stack": "Error: spawn docker ENOENT\n    at notFoundError (C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms\\node_modules\\child-process-ext\\node_modules\\cross-spawn\\lib\\enoent.js:6:26)\n    at verifyENOENT (C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms\\node_modules\\child-process-ext\\node_modules\\cross-spawn\\lib\\enoent.js:40:16)\n    at cp.emit (C:\\Users\\HP\\Desktop\\health_syst\\health_management_system\\Ihms\\node_modules\\child-process-ext\\node_modules\\cross-spawn\\lib\\enoent.js:27:25)\n    at ChildProcess._handle.onexit (node:internal/child_process:294:12)",
+      "code": "ENOENT"
+    },
+    "params": {},
+    "machineId": "1bac482f5cfbc337d5317e6db9ac82c2",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "e4839bf6-98ff-4374-842c-210c3da8ed80",
+    "orgName": "hcltech121",
+    "userId": "WWpFdp6WNNrq2lPpM0",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "hcltech121",
+    "subscription": null,
+    "userEmail": "sahirbhat007@gmail.com",
+    "serviceProviderAwsRegion": "ap-south-1",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "664418992296",
+    "projectType": "traditional",
+    "versionSf": "4.4.6",
+    "serviceProviderAwsCfStackName": "ihms-dev",
+    "serviceUniqueId": null,
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}

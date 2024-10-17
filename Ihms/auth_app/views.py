@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,40 +25,52 @@ cognito_client = boto3.client(
 
 # Sign-Up API View
 class SignUpView(APIView):
+    permission_classes = [AllowAny]
+    """
+    Handle user signup using AWS Cognito.
+    """
     def post(self, request):
+        # Extract email, password, and name from the request data
         email = request.data.get('email')
         password = request.data.get('password')
-        name = request.data.get('name')  # Get the name from request data
+        name = request.data.get('name')  # Get the name from the request
+
+        # Validate input fields
+        if not email or not password or not name:
+            return Response({'error': 'Email, password, and name are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            # Sign up user in Cognito
             response = cognito_client.sign_up(
-                ClientId=os.getenv('COGNITO_CLIENT_ID'),
+                ClientId=COGNITO_CLIENT_ID,
                 Username=email,
                 Password=password,
                 UserAttributes=[
-                    {
-                        'Name': 'email',
-                        'Value': email
-                    },
-                    {
-                        'Name': 'name',  # Add the name attribute
-                        'Value': name
-                    }
+                    {'Name': 'email', 'Value': email},
+                    {'Name': 'name', 'Value': name}
                 ]
             )
             return Response({'message': 'User signed up successfully!'}, status=status.HTTP_201_CREATED)
+
         except cognito_client.exceptions.UsernameExistsException:
-            return Response({'error': 'User already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 # Confirm User API View
 class ConfirmUserView(APIView):
+    permission_classes= [AllowAny]
     def post(self, request):
         email = request.data.get('email')
         confirmation_code = request.data.get('confirmation_code')
 
+        # Validate input fields
+        if not email or not confirmation_code:
+            return Response({'error': 'Email and confirmation code are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            response = cognito_client.confirm_sign_up(
+            cognito_client.confirm_sign_up(
                 ClientId=COGNITO_CLIENT_ID,
                 Username=email,
                 ConfirmationCode=confirmation_code
@@ -68,9 +81,14 @@ class ConfirmUserView(APIView):
 
 # Login API View
 class LoginView(APIView):
+    permission_classes=[AllowAny]
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+
+        # Validate input fields
+        if not email or not password:
+            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             response = cognito_client.initiate_auth(
@@ -87,15 +105,15 @@ class LoginView(APIView):
         except cognito_client.exceptions.UserNotConfirmedException:
             return Response({'error': 'User not confirmed'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)#
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-  #forgot password view              
+# Forgot Password View
 class ForgotPasswordView(APIView):
+    permission_classes=[AllowAny]
     """
     This view handles the 'Forgot Password' functionality.
     It sends the reset code to the user's email/phone.
     """
-
     def post(self, request):
         username = request.data.get('username')
 
@@ -117,21 +135,20 @@ class ForgotPasswordView(APIView):
         except Exception as e:
             return Response({"error": f"Error initiating forgot password: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#confirm code and reset password view
-# 
 
-
+# Confirm Password Reset View
 class ConfirmPasswordResetView(APIView):
+    permission_classes=AllowAny
     """
     This view handles the 'Confirm Password Reset' functionality.
     It validates the confirmation code and resets the password.
     """
-
     def post(self, request):
         username = request.data.get('username')
         confirmation_code = request.data.get('confirmation_code')
         new_password = request.data.get('new_password')
 
+        # Validate input fields
         if not username or not confirmation_code or not new_password:
             return Response({"error": "Username, confirmation code, and new password are required."},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -152,6 +169,3 @@ class ConfirmPasswordResetView(APIView):
         except Exception as e:
             return Response({"error": f"Error confirming password reset: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        
-        

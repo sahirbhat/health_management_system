@@ -1,0 +1,39 @@
+service: ihms  # Name of your service
+
+provider:
+  name: aws
+  runtime: python3.12  # Specify the Python runtime
+  region: ap-south-1  # Change to your desired region
+  environment:
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}  # Reference your .env file
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+
+functions:
+  wsgi:
+    handler: "wsgi_handler.handler"  # The handler in your WSGI file
+    events:
+      - http:
+          path: /
+          method: any  # Handle any HTTP method
+      - http:
+          path: /{proxy+}  # For all other routes
+          method: any
+
+package:
+  exclude:
+    - .env  # Exclude the .env file from deployment
+    - __pycache__/**
+    - .git/**
+
+plugins:
+  - serverless-wsgi  # Use serverless-wsgi plugin for WSGI support
+  - serverless-python-requirements  # For handling Python dependencies
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux  # Use Docker to install packages if you're on non-Linux
+    zip: true  # Create a zip file for dependencies
+
+# Add any additional configurations as necessary
